@@ -1,4 +1,36 @@
-﻿
+﻿var chatterName = 'Visitor';
+
+var connection = new signalR.HubConnectionBuilder()
+    .withUrl('/chatHub')
+    .build();
+
+connection.on('RecieveMessage', renderMessage);
+
+connection.start();
+
+function showDialog() {
+    var dialogEl = document.getElementById('chatDialog');
+    dialogEl.style.display = 'block';
+}
+
+function sendMessage(text) {
+    if (text && text.length) {
+        connection.invoke('SendMessage', chatterName, text);
+    }
+}
+
+function ready() {
+    setTimeout(showDialog, 750);
+
+    var chatFormEl = document.getElementById('chatForm');
+    document.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var text = e.target[0].value;
+        e.target[0].value = '';
+        sendMessage(text);
+    });
+}
+
 
 
 
@@ -28,3 +60,5 @@ function renderMessage(name, time, message) {
     chatHistoryEl.appendChild(newItem);
     chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight - chatHistoryEl.clientHeight;
 }
+
+document.addEventListener('DOMContentLoaded', ready);
