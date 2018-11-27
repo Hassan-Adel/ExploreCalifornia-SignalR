@@ -48,12 +48,24 @@ function ready() {
     setTimeout(showDialog, 750);
 
     var chatFormEl = document.getElementById('chatForm');
-    document.addEventListener('submit', function (e) {
+    chatFormEl.addEventListener('submit', function (e) {
         e.preventDefault();
         var text = e.target[0].value;
         e.target[0].value = '';
         sendMessage(text);
     });
+
+    var welcomePanleEl = document.getElementById('chatWelcomePanel');
+    welcomePanleEl.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var name = e.target[0].value;
+        if (name && name.length) {
+            welcomePanleEl.style.display = 'none';
+            chatterName = name;
+            startConnection();
+        }
+    });
+        
 }
 
 
