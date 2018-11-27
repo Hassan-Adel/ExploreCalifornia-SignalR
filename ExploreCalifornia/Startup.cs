@@ -52,6 +52,14 @@ namespace ExploreCalifornia
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            //If the client app is on a seperate domain
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins("https://www.example.com") //clientside server
+                .AllowAnyHeader()
+                .WithMethods("GET", "POST")
+                .AllowCredentials();
+            });
 
             //It's important that the UseSignalR line is below any lines that deal with https or authentication or security.
             //we have to provide a route configuration.and then tell it what end point we want this Hub to listen on. 
