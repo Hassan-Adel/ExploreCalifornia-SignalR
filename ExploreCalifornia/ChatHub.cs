@@ -9,6 +9,21 @@ namespace ExploreCalifornia
 {
     public class ChatHub : Hub
     {
+        public override async Task OnConnectedAsync()
+        {
+            //Will sent to the ckient that was connected only
+            await Clients.Caller.SendAsync(
+                "RecieveMessage", 
+                "Explore California Team", 
+                DateTimeOffset.UtcNow, 
+                "Hello! What can we help you with ?");
+            await base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            return base.OnDisconnectedAsync(exception);
+        }
         public async Task SendMessage(string name, string text)
         {
             var message = new ChatMessage
