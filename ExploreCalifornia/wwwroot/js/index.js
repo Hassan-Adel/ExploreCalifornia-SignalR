@@ -2,23 +2,24 @@
 
 var dialogEl = document.getElementById('chatDialog');
 
+// Initialize the SignalR client
 var connection = new signalR.HubConnectionBuilder()
     .withUrl('/chatHub')
     .build();
 
-connection.on('RecieveMessage', renderMessage);
+connection.on('ReceiveMessage', renderMessage);
 
 connection.onclose(function () {
     onDisconnected();
     console.log('Reconnecting in 5 seconds...');
     setTimeout(startConnection, 5000);
-});
+})
 
 function startConnection() {
     connection.start()
         .then(onConnected)
         .catch(function (err) {
-            console.log(err);
+            console.error(err);
         });
 }
 
@@ -28,13 +29,14 @@ function onDisconnected() {
 
 function onConnected() {
     dialogEl.classList.remove('disconnected');
+
     var messageTextboxEl = document.getElementById('messageTextbox');
     messageTextboxEl.focus();
 }
 
-startConnection();
 
-function showDialog() {
+
+function showChatDialog() {
     dialogEl.style.display = 'block';
 }
 
@@ -45,30 +47,29 @@ function sendMessage(text) {
 }
 
 function ready() {
-    setTimeout(showDialog, 750);
+    setTimeout(showChatDialog, 750);
 
     var chatFormEl = document.getElementById('chatForm');
     chatFormEl.addEventListener('submit', function (e) {
         e.preventDefault();
+
         var text = e.target[0].value;
         e.target[0].value = '';
         sendMessage(text);
     });
 
-    var welcomePanleEl = document.getElementById('chatWelcomePanel');
-    welcomePanleEl.addEventListener('submit', function (e) {
+    var welcomePanelEl = document.getElementById('chatWelcomePanel');
+    welcomePanelEl.addEventListener('submit', function (e) {
         e.preventDefault();
+
         var name = e.target[0].value;
         if (name && name.length) {
-            welcomePanleEl.style.display = 'none';
+            welcomePanelEl.style.display = 'none';
             chatterName = name;
             startConnection();
         }
     });
-        
 }
-
-
 
 
 function renderMessage(name, time, message) {
