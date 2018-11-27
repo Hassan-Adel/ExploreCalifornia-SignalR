@@ -1,15 +1,40 @@
 ﻿var chatterName = 'Visitor';
 
+var dialogEl = document.getElementById('chatDialog');
+
 var connection = new signalR.HubConnectionBuilder()
     .withUrl('/chatHub')
     .build();
 
 connection.on('RecieveMessage', renderMessage);
 
-connection.start();
+connection.onclose(function () {
+    onDisconnected();
+    console.log('Reconnecting in 5 seconds...');
+    setTimeout(startConnection, 5000);
+});
+
+function startConnection() {
+    connection.start()
+        .then(onConnected)
+        .catch(function (err) {
+            console.log(err);
+        });
+}
+
+function onDisconnected() {
+    dialogEl.classList.add('disconnected');
+}
+
+function onConnected() {
+    dialogEl.classList.remove('disconnected');
+    var messageTextboxEl = document.getElementById('messageTextbox');
+    messageTextboxEl.focus();
+}
+
+startConnection();
 
 function showDialog() {
-    var dialogEl = document.getElementById('chatDialog');
     dialogEl.style.display = 'block';
 }
 

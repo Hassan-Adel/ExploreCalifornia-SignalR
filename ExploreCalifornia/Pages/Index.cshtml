@@ -11,7 +11,10 @@
 
 <link rel="stylesheet" href="~/css/chat.css" />
 
-<div id="chatDialog" title="Chat with support">
+<div id="chatDialog" title="Chat with support" class="disconnected">
+    <div id="chatConnectionInfo">
+        <strong>Connecting ... </strong>
+    </div>
     <div id="chatMainPanel">
         <ul id="chatHistory"></ul>
         <div id="bottomPanel">
