@@ -7,7 +7,7 @@ var connection = new signalR.HubConnectionBuilder()
     .withUrl('/chatHub')
     .build();
 
-connection.on('ReceiveMessage', renderMessage);
+connection.on('RecieveMessage', renderMessage);
 
 connection.onclose(function () {
     onDisconnected();
