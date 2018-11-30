@@ -46,6 +46,7 @@ namespace ExploreCalifornia
                 Text = text,
                 SentAt = DateTimeOffset.UtcNow
             };
+            await _chatRoomService.AddMessage(roomId, message);
 
             // we need to specify the name of the function that we're invoking on the Client. We'll create a function called ReceiveMessage, and then we'll pass any parameters we want to send to the Client.
             //Broadcast to all clients

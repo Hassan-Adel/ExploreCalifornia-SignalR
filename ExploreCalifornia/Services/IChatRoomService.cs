@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExploreCalifornia.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +10,9 @@ namespace ExploreCalifornia.Services
     {
         Task<Guid> CreateRoom(string connectionId);
         Task<Guid> GetRoomForConnectionId(string connectionId);
-        Task SetRoomName(Guid roodId, string roomName);
+        Task SetRoomName(Guid roomId, string roomName);
+        Task AddMessage(Guid roomId, ChatMessage message);
+        Task <IEnumerable<ChatMessage>> GetMessageHistory(Guid roomId);
 
     }
 }
