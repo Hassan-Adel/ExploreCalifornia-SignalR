@@ -51,5 +51,12 @@ namespace ExploreCalifornia
             //Broadcast to all clients
             await Clients.Group(roomId.ToString()).SendAsync("RecieveMessage", message.SenderName, message.SentAt, message.Text);
         }
+
+        public async Task SetRoomName(string visitorName)
+        {
+            var roomName = $"Chat with {visitorName} from web";
+            var roomId = await _chatRoomService.GetRoomForConnectionId(Context.ConnectionId);
+            await _chatRoomService.SetRoomName(roomId, roomName);
+        }
     }
 }

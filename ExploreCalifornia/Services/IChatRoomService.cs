@@ -9,6 +9,7 @@ namespace ExploreCalifornia.Services
     {
         Task<Guid> CreateRoom(string connectionId);
         Task<Guid> GetRoomForConnectionId(string connectionId);
+        Task SetRoomName(Guid roodId, string roomName);
 
     }
 }

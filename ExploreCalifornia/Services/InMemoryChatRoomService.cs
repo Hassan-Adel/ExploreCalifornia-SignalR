@@ -22,5 +22,14 @@ namespace ExploreCalifornia.Services
                 throw new ArgumentException("Invalid connection Id");
             return Task.FromResult(foundRoom.Key);
         }
+
+        public Task SetRoomName(Guid roodId, string roomName)
+        {
+            if (!_roomInfo.ContainsKey(roodId))
+                throw new ArgumentException("Invalid room Id");
+            _roomInfo[roodId].RoomName = roomName;
+
+            return Task.CompletedTask;
+        }
     }
 }
