@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ExploreCalifornia.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,6 +35,15 @@ namespace ExploreCalifornia
 
             services.AddSignalR();
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Login";
+            });
+
             services.AddSingleton<IChatRoomService, InMemoryChatRoomService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -63,6 +73,8 @@ namespace ExploreCalifornia
                 .WithMethods("GET", "POST")
                 .AllowCredentials();
             });
+
+            app.UseAuthentication();
 
             //It's important that the UseSignalR line is below any lines that deal with https or authentication or security.
             //we have to provide a route configuration.and then tell it what end point we want this Hub to listen on. 
