@@ -49,7 +49,7 @@ namespace ExploreCalifornia.Pages
 
             var properties = new AuthenticationProperties
             {
-                RedirectUri = returnUrl ?? Url.Content("~/")
+                RedirectUri = returnUrl ?? Url.Content("~/SupportAgent")
             };
 
             return SignIn(
