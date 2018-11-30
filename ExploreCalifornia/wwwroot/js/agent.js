@@ -27,6 +27,7 @@ chatConnection.onclose(function () {
 });
 
 chatConnection.on('RecieveMessage', addMessage);
+agentConnection.on('RecieveMessages', addMessages);
 
 function startChatConnection() {
     chatConnection
@@ -43,7 +44,7 @@ function handleDisconnected(retryFunc) {
 
 function sendMessage(text) {
     if (text && text.length) {
-        // TODO: Send an agent message
+        agentConnection.invoke('SendAgentMessage', activeRoomId, text)
     }
 }
 
@@ -66,6 +67,7 @@ function switchActiveRoomTo(id) {
 
     if (activeRoomId) {
         chatConnection.invoke('LeaveRoom', activeRoomId);
+        agentConnection.invoke('LoadHistory', activeRoomId);
     }
 
     activeRoomId = id;

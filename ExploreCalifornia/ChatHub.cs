@@ -12,9 +12,11 @@ namespace ExploreCalifornia
     public class ChatHub : Hub
     {
         private readonly IChatRoomService _chatRoomService;
-        public ChatHub(IChatRoomService chatRoomService)
+        private readonly IHubContext<AgentHub> _agentHub;
+        public ChatHub(IChatRoomService chatRoomService, IHubContext<AgentHub> agentHub)
         {
             _chatRoomService = chatRoomService;
+            _agentHub = agentHub;
         }
         public override async Task OnConnectedAsync()
         {
@@ -44,6 +46,7 @@ namespace ExploreCalifornia
         {
             return base.OnDisconnectedAsync(exception);
         }
+
         public async Task SendMessage(string name, string text)
         {
             var roomId = await _chatRoomService.GetRoomForConnectionId(Context.ConnectionId);
@@ -65,6 +68,8 @@ namespace ExploreCalifornia
             var roomName = $"Chat with {visitorName} from web";
             var roomId = await _chatRoomService.GetRoomForConnectionId(Context.ConnectionId);
             await _chatRoomService.SetRoomName(roomId, roomName);
+            //we need to send all the connected agents a notification that their room list needs to be refreshed 
+            await _agentHub.Clients.All.SendAsync("ActiveRooms", await _chatRoomService.GetAllRooms());
         }
 
         [Authorize]
