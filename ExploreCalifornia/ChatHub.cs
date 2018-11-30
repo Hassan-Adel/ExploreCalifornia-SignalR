@@ -1,4 +1,5 @@
 ﻿using ExploreCalifornia.Models;
+using ExploreCalifornia.Services;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,20 @@ namespace ExploreCalifornia
 {
     public class ChatHub : Hub
     {
+        private readonly IChatRoomService _chatRoomService;
+        public ChatHub(IChatRoomService chatRoomService)
+        {
+            _chatRoomService = chatRoomService;
+        }
         public override async Task OnConnectedAsync()
         {
+            //To add a connection to a group you need to specify the connection ID and a group name as a string. 
+            //The connection ID is just Context.ConnectionId for the current connection ID
+            //Since SignalR doesn't persist or keep track of the groups themselves, 
+            //we'll need to add a service that can remember the groups that have been created. 
+            //Since this is a chat application, we'll call each group a chat room and create a chat room service. 
+            var roomId = await _chatRoomService.CreateRoom(Context.ConnectionId);
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
             //Will sent to the ckient that was connected only
             await Clients.Caller.SendAsync(
                 "RecieveMessage", 
@@ -26,6 +39,7 @@ namespace ExploreCalifornia
         }
         public async Task SendMessage(string name, string text)
         {
+            var roomId = await _chatRoomService.GetRoomForConnectionId(Context.ConnectionId);
             var message = new ChatMessage
             {
                 SenderName = name,
@@ -35,7 +49,7 @@ namespace ExploreCalifornia
 
             // we need to specify the name of the function that we're invoking on the Client. We'll create a function called ReceiveMessage, and then we'll pass any parameters we want to send to the Client.
             //Broadcast to all clients
-            await Clients.All.SendAsync("RecieveMessage", message.SenderName, message.SentAt, message.Text);
+            await Clients.Group(roomId.ToString()).SendAsync("RecieveMessage", message.SenderName, message.SentAt, message.Text);
         }
     }
 }
