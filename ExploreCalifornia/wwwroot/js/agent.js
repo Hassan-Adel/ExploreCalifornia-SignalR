@@ -44,7 +44,7 @@ function handleDisconnected(retryFunc) {
 
 function sendMessage(text) {
     if (text && text.length) {
-        agentConnection.invoke('SendAgentMessage', activeRoomId, text)
+        agentConnection.invoke('SendAgentMessage', activeRoomId, text);
     }
 }
 
@@ -67,7 +67,6 @@ function switchActiveRoomTo(id) {
 
     if (activeRoomId) {
         chatConnection.invoke('LeaveRoom', activeRoomId);
-        agentConnection.invoke('LoadHistory', activeRoomId);
     }
 
     activeRoomId = id;
@@ -76,7 +75,7 @@ function switchActiveRoomTo(id) {
     if (!id) return;
 
     chatConnection.invoke('JoinRoom', activeRoomId);
-    // TODO: Load the room history
+    agentConnection.invoke('LoadHistory', activeRoomId);
 }
 
 
@@ -103,7 +102,6 @@ function setActiveRoomButton(el) {
 }
 
 function loadRooms(rooms) {
-    debugger;
     if (!rooms) return;
 
     var roomIds = Object.keys(rooms);
